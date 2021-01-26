@@ -111,31 +111,28 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    depths = {}
+    trace = {}
     queue = util.Queue()
     actions = []
     state = problem.getStartState()
-    depths[state] = 0
+    trace[state] = (' ', state)
     queue.push((problem.getStartState(), 0))
     goal = None
+
     while not queue.isEmpty():
         state, depth = queue.pop()
         if problem.isGoalState(state):
             goal = state
             break
         for (nextState, action, cost) in problem.getSuccessors(state):
-            if depths.get(nextState) is None:
-                depths[nextState] = depth+1
-                queue.push((nextState, depth+1))
-    while depths[goal] > 0:
-        for (nextState, action, cost) in problem.getSuccessors(goal):
-            if not depths.get(nextState) is None and depths[goal] == depths[nextState]+1:
-                for (state2, action2, cost2) in problem.getSuccessors(nextState):
-                    if goal == state2:
-                        actions.append(action2)
-                        break
-                goal = nextState
-                continue
+            if trace.get(nextState) is None:
+                trace[nextState] = (action, state)
+                queue.push((nextState, depth+cost))
+
+    while not goal == problem.getStartState():
+        action, fromState = trace[goal]
+        actions.append(action)
+        goal = fromState
     actions.reverse()
     return actions
 
