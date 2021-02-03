@@ -113,35 +113,45 @@ def breadthFirstSearch(problem):
     "*** YOUR CODE HERE ***"
     trace = {}
     queue = util.Queue()
-    actions = []
     state = problem.getStartState()
-    trace[state] = (' ', state)
+    trace[state] = []
     queue.push((problem.getStartState(), 0))
-    goal = None
 
     while not queue.isEmpty():
         state, depth = queue.pop()
         if problem.isGoalState(state):
-            goal = state
-            break
+            return trace[state]
         for (nextState, action, cost) in problem.getSuccessors(state):
             if trace.get(nextState) is None:
-                trace[nextState] = (action, state)
+                trace[nextState] = trace[state]+[action]
                 queue.push((nextState, depth+cost))
 
-    while not goal == problem.getStartState():
-        action, fromState = trace[goal]
-        actions.append(action)
-        goal = fromState
-    actions.reverse()
-    return actions
+
 
 
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    trace = {}
+    queue = util.PriorityQueue()
+    state = problem.getStartState()
+    trace[state] = ([], 0)
+    queue.push(problem.getStartState(),0)
+
+    while not queue.isEmpty():
+        state = queue.pop()
+        actions, cost = trace[state]
+        if problem.isGoalState(state):
+            (path, cost) = trace[state]
+            return path
+        for (nextState, action, actionCost) in problem.getSuccessors(state):
+            if trace.get(nextState) is None or trace[nextState][1] > trace[state][1]+cost:
+                trace[nextState] = (actions+[action], cost+actionCost)
+                queue.update(nextState, cost+actionCost)
+
+
+
 
 
 def nullHeuristic(state, problem=None):
