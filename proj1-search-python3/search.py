@@ -137,7 +137,7 @@ def uniformCostSearch(problem):
     queue = util.PriorityQueue()
     state = problem.getStartState()
     trace[state] = ([], 0)
-    queue.push(problem.getStartState(),0)
+    queue.push(problem.getStartState(), 0)
 
     while not queue.isEmpty():
         state = queue.pop()
@@ -146,7 +146,7 @@ def uniformCostSearch(problem):
             (path, cost) = trace[state]
             return path
         for (nextState, action, actionCost) in problem.getSuccessors(state):
-            if trace.get(nextState) is None or trace[nextState][1] > trace[state][1]+cost:
+            if trace.get(nextState) is None or trace[nextState][1] > trace[state][1]+actionCost:
                 trace[nextState] = (actions+[action], cost+actionCost)
                 queue.update(nextState, cost+actionCost)
 
